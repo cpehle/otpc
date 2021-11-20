@@ -113,7 +113,7 @@
 		}
 	}}/>
 
-<main class="w-100 bg-black-10 sans-serif ph2">
+<main class="w-100 bg-black-10 sans-serif">
 	<div class="flex flex-column justify-between vh-100">
 		{#if connected}
 		<div class="w-100">
@@ -137,18 +137,18 @@
 		<button class="pa-2 button-reset pv3 tc ba b--pink bg-animate hover-bg-white-10 white pointer w-100 br2-ns" on:click={() => {
 			navigator.clipboard.writeText(`${window.location.href}?peerid=${peerid}`)
 		}}>Your Peer ID is {peerid} 📋</button>
-		<img src={dataURI} style="width: 300px; height:300px" />
+		<img src={dataURI} class="center" style="width: 300px; height:300px" />
 		{/if}
 		<div class="w-100">
 			{#if connected}
 				<div class="flex">
 					<input class="fl bn w-90 pa-2 input-reset black-80 bg-white pa3 lh-solid w-100 w-75-m w-80-l br2-ns br--left-ns" bind:value={currentMessage} />
-					<button class="fl w-10 pa-2 button-reset pv3 tc bn bg-animate bg-black-70 hover-bg-black white pointer w-100 w-25-m w-20-l br2-ns br--right-ns" on:click={() => handleSend()}>Send</button>
+					<button class="fl w-10 pa-2 button-reset pv3 tc bn bg-animate bg-black-70 hover-bg-black white pointer w-100 w-25-m w-20-l" on:click={() => handleSend()}>Send</button>
 				</div>
 			{:else}
 				<div class="flex">
 					<input class="fl bn w-90 pa-2 input-reset black-80 bg-white pa3 lh-solid w-100 w-75-m w-80-l br2-ns br--left-ns" bind:value={currentMessage} placeholder="Target ID"/>
-					<button class="fl w-10 pa-2 button-reset pv3 tc bn bg-animate bg-blue hover-bg-black white pointer w-100 w-25-m w-20-l br2-ns br--right-ns" on:click={() => handleConnection()}>Connect</button>
+					<button class="fl w-10 pa-2 button-reset pv3 tc bn bg-animate bg-blue hover-bg-black white pointer w-100 w-25-m w-20-l" on:click={() => handleConnection()}>Connect</button>
 				</div>
 			{/if}
 		</div>
