@@ -137,7 +137,7 @@
 		<button class="pa-2 button-reset pv3 tc ba b--pink bg-animate hover-bg-white-10 white pointer w-100 br2-ns" on:click={() => {
 			navigator.clipboard.writeText(`${window.location.href}?peerid=${peerid}`)
 		}}>Your Peer ID is {peerid} 📋</button>
-		<img src={dataURI} />
+		<img src={dataURI} style="width: 100%; height:auto" />
 		{/if}
 		<div class="w-100">
 			{#if connected}
