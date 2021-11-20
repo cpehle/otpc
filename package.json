@@ -27,6 +27,7 @@
   "dependencies": {
     "@stablelib/base64": "^1.0.1",
     "peerjs": "^1.3.2",
+    "qr-encode": "^0.3.0",
     "sirv-cli": "^1.0.0",
     "tweetnacl": "^1.0.3"
   }

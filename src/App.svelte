@@ -2,20 +2,28 @@
 	import Peer from 'peerjs';
 	import nacl from 'tweetnacl';
 	import base64 from '@stablelib/base64';
+	import qr from 'qr-encode';
 
 	var peer = new Peer();
 	let peerid = ""
 	let connection = null;
 	let connected = false;
     export let currentMessage: string = "";
-
+	var dataURI
 	let keypair = nacl.box.keyPair();
 	let targetPublicKeyBytes;
 	$: currentMessageBytes = new TextEncoder().encode(currentMessage);
 	let messages = [];
 
+	const params = new URLSearchParams(window.location.search);
+	const targetPeerId = params.get("peerid");
+
 	peer.on('open', function(id) {
 		peerid = id;
+		if (targetPeerId) {
+ 			handleConnection(targetPeerId);
+		}
+		dataURI = qr(`${window.location.href}?peerid=${peerid}`, {type: 6, size: 6, level: 'Q'})
 	});
 
 	peer.on('connection', function(conn) {
@@ -59,8 +67,13 @@
 		currentMessage = ""
 	}
 
-	function handleConnection() {
-		var conn = peer.connect(currentMessage);
+	function handleConnection(targetPeerId : string = "") {
+		if (targetPeerId == "") {
+			var conn = peer.connect(currentMessage);
+		} else {
+			console.log(`connecting to ${targetPeerId}`)
+			var conn = peer.connect(targetPeerId);
+		}
 		connection = conn;
 		conn.on('open', function() {
 			connected = true
@@ -121,20 +134,21 @@
 			</div>
 		</div>
 		{:else}
-		<button class="f6 link dim ba ph3 pv2 mb2 dib near-black" on:click={() => {
-			navigator.clipboard.writeText(peerid)
+		<button class="pa-2 button-reset pv3 tc ba b--pink bg-animate hover-bg-white-10 white pointer w-100 br2-ns" on:click={() => {
+			navigator.clipboard.writeText(`${window.location.href}?peerid=${peerid}`)
 		}}>Your Peer ID is {peerid} 📋</button>
+		<img src={dataURI} />
 		{/if}
 		<div class="w-100">
 			{#if connected}
 				<div class="flex">
 					<input class="fl bn w-90 pa-2 input-reset black-80 bg-white pa3 lh-solid w-100 w-75-m w-80-l br2-ns br--left-ns" bind:value={currentMessage} />
-					<button class="fl w-10 pa-2 button-rese pv3 tc bn bg-animate bg-black-70 hover-bg-black white pointer w-100 w-25-m w-20-l br2-ns br--right-ns" on:click={() => handleSend()}>Send</button>
+					<button class="fl w-10 pa-2 button-reset pv3 tc bn bg-animate bg-black-70 hover-bg-black white pointer w-100 w-25-m w-20-l br2-ns br--right-ns" on:click={() => handleSend()}>Send</button>
 				</div>
 			{:else}
 				<div class="flex">
 					<input class="fl bn w-90 pa-2 input-reset black-80 bg-white pa3 lh-solid w-100 w-75-m w-80-l br2-ns br--left-ns" bind:value={currentMessage} placeholder="Target ID"/>
-					<button class="fl w-10 pa-2 button-rese pv3 tc bn bg-animate bg-blue hover-bg-black white pointer w-100 w-25-m w-20-l br2-ns br--right-ns" on:click={() => handleConnection()}>Connect</button>
+					<button class="fl w-10 pa-2 button-reset pv3 tc bn bg-animate bg-blue hover-bg-black white pointer w-100 w-25-m w-20-l br2-ns br--right-ns" on:click={() => handleConnection()}>Connect</button>
 				</div>
 			{/if}
 		</div>
