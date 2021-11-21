@@ -12,6 +12,7 @@
 	var dataURI
 	let keypair = nacl.box.keyPair();
 	let targetPublicKeyBytes;
+	let messageContainerRef;
 	$: currentMessageBytes = new TextEncoder().encode(currentMessage);
 	let messages = [];
 
@@ -65,6 +66,9 @@
 		}))
 		messages = [...messages, {sender: "self", value: currentMessage}]
 		currentMessage = ""
+		if (messageContainerRef) {
+			messageContainerRef.scrollTop = messageContainerRef.scrollHeight;
+		}
 	}
 
 	function handleConnection(targetPeerId : string = "") {
@@ -91,6 +95,9 @@
 					messages  = [...messages, {sender: "other", value: new TextDecoder().decode(msg)}]
 					break;
 				}
+				if (messageContainerRef) {
+					messageContainerRef.scrollTop = messageContainerRef.scrollHeight;
+				}
 			});
 			connection.send(
 				JSON.stringify({
@@ -116,8 +123,8 @@
 <main class="w-100 bg-black-10 sans-serif">
 	<div class="flex flex-column justify-between vh-100">
 		{#if connected}
-		<div class="w-100">
-			<div class="pa-2 w-100">
+		<div bind:this={messageContainerRef} class="flex-grow overflow-auto w-100 vh-100">
+			<div class="pa-2 vh-100 w-100 overflow-auto flex flex-column justify-end">
 				{#each messages as msg}
 					<div class="w-100 flex pv1 ph2">
 						{#if msg.sender == "self"}
