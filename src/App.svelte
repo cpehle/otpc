@@ -51,7 +51,9 @@
 					messages  = [...messages, {sender: "other", value: new TextDecoder().decode(msg)}]
 					break;
 			}
-
+			if (messageContainerRef) {
+				messageContainerRef.scrollTop = messageContainerRef.scrollHeight;
+			}
 		});
 	});
 
